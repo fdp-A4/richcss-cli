@@ -1,20 +1,16 @@
-require 'thor/group'
+require 'json'
+require 'rest_client'
 
 module Richcss
-  module InstallParts
-    class Template < Thor::Group
-      include Thor::Actions
-
-      argument :parts, :type => :string
-
-      def get_github_file
+    class Part
+      def download(part)
         put "retrieving parts from website"
-        #gets file 
+        # TODO get download url
         url = ""
         install(url)
       end
 
-      #install this part
+      # Install this part
       def install(url)
         Dir.chdir("parts") do
           system("wget -qO- -O tmp.zip #{url} && unzip tmp.zip && rm tmp.zip")

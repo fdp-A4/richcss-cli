@@ -5,14 +5,21 @@ module Richcss
     class Template < Thor::Group
       include Thor::Actions
 
-      argument :group, :type => :string
+      argument :groups, :type => :array
+
+      def self.source_root
+        File.dirname(__FILE__) + "/generator"
+      end
+
+      def create_routes
+        copy_file "routes.scss", "routes.scss"
 
       def create_group
-        empty_directory(group)
+        array.each { |g| empty_directory(g) }
       end
 
       def create_keepfile
-        create_file "#{group}/.keep"
+        groups.each { |g| create_file "#{g}/.keep" }
       end
     end
   end
