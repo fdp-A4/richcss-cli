@@ -13,9 +13,10 @@ module Richcss
 
       def create_routes
         copy_file "routes.scss", "routes.scss"
-
+      end
+      
       def create_group
-        array.each { |g| empty_directory(g) }
+        groups.each { |g| empty_directory(g) }
       end
 
       def create_keepfile
