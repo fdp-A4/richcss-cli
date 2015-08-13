@@ -33,4 +33,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "thor"
   spec.add_dependency "molinillo"
+  spec.add_dependency "rest-client"
 end

@@ -10,7 +10,10 @@ module Richcss
 
     desc "install PART", "Install the Parts requested into the Parts directory of Rich CSS framework"
     def install(part)
-    	Richcss::Part.download(part)
+      part = Richcss::Part.new
+      part.name = part
+      
+    	part.fetch()
     end
   end
 end
