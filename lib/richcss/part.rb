@@ -1,5 +1,7 @@
 require 'json'
 require 'rest-client'
+require 'uri'
+require 'zipruby'
 
 module Richcss
   class Part
@@ -7,9 +9,10 @@ module Richcss
 
     # Fetch url and download the part
     def fetch()
+       puts "Fetching part " + name
+
       begin
-        resp = RestClient.get 'localhost:3000/api/part', {:params => {'name' => name}}
-        
+        resp = RestClient.get 'localhost:3000/api/part/#{name}'
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           self.install(body['url'])
@@ -22,10 +25,40 @@ module Richcss
     end
 
     # Install this part
-    def install(url)
-      Dir.chdir("parts") do
-        # TODO
-        system("wget -qO- -O tmp.zip #{url} && unzip tmp.zip && rm tmp.zip")
+    def install(resource)
+      uri = URI.parse(resource)
+
+      http_object = Net::HTTP.new(uri.host, uri.port)
+      http_object.use_ssl = true if uri.scheme == 'https'
+      begin
+        http_object.start do |http|
+          request = Net::HTTP::Get.new uri.request_uri
+          http.read_timeout = 500
+          http.request request do |response|
+            case response
+            when Net::HTTPRedirection then
+              location = response['location']
+              install(location)
+            else
+              puts "Installing part..."
+              Zip::Archive.open_buffer(response.body) do |ar|
+                 ar.each do |zf|
+                    if zf.directory?
+                       FileUtils.mkdir_p(zf.name)
+                    else
+                       dirname = File.dirname(zf.name)
+                       FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+                       open(zf.name, 'wb') do |f|
+                          f << zf.read
+                       end
+                    end
+                 end
+              end
+            end
+          end
+        end
+      rescue Exception => e
+        puts e
       end
     end
   end
