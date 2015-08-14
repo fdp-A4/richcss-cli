@@ -9,15 +9,15 @@ module Richcss
 
     # Fetch url and download the part
     def fetch()
-       puts "Fetching part " + name
+       puts "Fetching part #{name}"
 
       begin
-        resp = RestClient.get 'localhost:3000/api/part/#{name}'
+        resp = RestClient.get "http://localhost:3000/api/part/#{name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           self.install(body['url'])
         else
-          puts "Error: Part " + name + " cannot be found."
+          puts "Error: Part #{name} cannot be found."
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
