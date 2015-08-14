@@ -41,18 +41,33 @@ module Richcss
               install(location)
             else
               puts "Installing part..."
-              Zip::Archive.open_buffer(response.body) do |ar|
-                 ar.each do |zf|
-                    if zf.directory?
-                       FileUtils.mkdir_p(zf.name)
-                    else
-                       dirname = File.dirname(zf.name)
-                       FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
-                       open(zf.name, 'wb') do |f|
-                          f << zf.read
-                       end
-                    end
-                 end
+
+              # TODO make verifier class do this
+              if !Dir.exists?('parts')
+                FileUtils.mkdir_p('parts')
+              end
+
+              Dir.chdir('parts') do
+                Zip::Archive.open_buffer(response.body) do |ar|
+
+                   #save the directory name for rename later
+                   oldDirName = ar[0].name
+
+                   ar.each do |zf|
+                      if zf.directory?
+                         FileUtils.mkdir_p(zf.name)
+                      else
+                         dirname = File.dirname(zf.name)
+                         FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+                         open(zf.name, 'wb') do |f|
+                            f << zf.read
+                         end
+                      end
+                   end
+
+                   FileUtils.move(oldDirName, name)
+
+                end
               end
             end
           end
