@@ -2,6 +2,7 @@ require 'json'
 require 'rest-client'
 require 'uri'
 require 'zipruby'
+require 'pry'
 
 module Richcss
   class Part
@@ -51,7 +52,7 @@ module Richcss
                 Zip::Archive.open_buffer(response.body) do |ar|
 
                    #save the directory name for rename later
-                   oldDirName = ar[0].name
+                   oldDirName = ar.get_name(0)
 
                    ar.each do |zf|
                       if zf.directory?
@@ -65,7 +66,7 @@ module Richcss
                       end
                    end
 
-                   FileUtils.move(oldDirName, name)
+                   FileUtils.mv oldDirName, name
 
                 end
               end
