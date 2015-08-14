@@ -13,8 +13,7 @@ module Richcss
       part = Richcss::Part.new
       part.name = part
 
-    	#part.fetch()
-      part.install('https://github.com/DavidCZhu/A4AwesomeRepo/archive/v1.zip')
+    	part.fetch()
     end
   end
 end
