@@ -8,12 +8,17 @@ module Richcss
       Richcss::Generators::Template.start(['box', 'elements', 'parts'])
     end
 
-    desc "install PART", "Install the Parts requested into the Parts directory of Rich CSS framework"
+    desc "install <PART>", "Install the Parts requested into the Parts directory of Rich CSS framework"
     def install(part_name)
       part = Richcss::Part.new
       part.name = part_name
 
     	part.fetch()
+    end
+
+    desc "upload <REPO_URL> <REPO_OWNER> <REPO_NAME> <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
+    def upload(repo_url, repo_owner, repo_name, part_name)
+      Richcss::Manager.release
     end
   end
 end
