@@ -3,9 +3,21 @@ require 'richcss'
 
 module Richcss
   class CLI < Thor
-    desc "init", "Initialize current directory to follow the Rich CSS framework"
-    def init()
-      Richcss::Generators::Template.start(['box', 'elements', 'parts'])
+    desc "init <PART_NAME>", "Initialize current directory to follow the Rich CSS framework"
+
+    # part_name
+    # |--- lib
+    # |    |--- elements
+    # |    |    |--- ...
+    # |    |--- box
+    # |    |    |--- ... 
+    # |    |--- parts
+    # |    |    |--- ... 
+    # |--- part_name.spec
+    # |--- README.md
+    def init(part)
+      Richcss::Generators::Template.start([part])
+      # Richcss::Generators::Template.start('abc')
     end
 
     desc "install <PART>", "Install the Parts requested into the Parts directory of Rich CSS framework"

@@ -22,7 +22,7 @@ module Richcss
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
-      end
+      end 
     end
 
     # Install this part
