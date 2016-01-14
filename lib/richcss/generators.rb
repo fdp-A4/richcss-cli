@@ -17,12 +17,28 @@ module Richcss
       def init
         @name = part_name.first
         @groups = ['box', 'elements', 'parts']
+        @boxFiles = ['blocks', 'main', 'positioning']
+        @elementFiles = ['button', 'colors', 'features', 'fonts', 'images', 'inputs', 'lists']
       end
 
       def create_folders
         empty_directory(@name)
         empty_directory("#{@name}/lib")
         @groups.each { |g| empty_directory("#{@name}/lib/#{g}") }
+      end
+
+      def create_css_files
+        # TODO: add choice of CSS or SCSS files to generate
+        # TODO: Make it not hardcode box/elements
+        extension = ".css"
+        # extension = ".css.scss"
+        @boxFiles.each do |filename|
+          create_file "#{@name}/lib/box/#{filename}#{extension}"
+        end 
+
+        @elementFiles.each do |filename|
+          create_file "#{@name}/lib/elements/#{filename}#{extension}"
+        end
       end
 
       def create_files

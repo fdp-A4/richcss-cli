@@ -32,5 +32,10 @@ module Richcss
     def upload(repo_url, repo_owner, repo_name, part_name)
       Richcss::Manager.release
     end
+
+    desc "Check format", "yep"
+    def check(part_name)
+      Richcss::Manager.check(part_name)
+    end
   end
 end
