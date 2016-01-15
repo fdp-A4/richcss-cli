@@ -28,9 +28,9 @@ module Richcss
     	part.fetch()
     end
 
-    desc "upload <REPO_URL> <REPO_OWNER> <REPO_NAME> <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
-    def upload(repo_url, repo_owner, repo_name, part_name)
-      Richcss::Manager.release
+    desc "push <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
+    def push(part_name)
+      Richcss::Manager.release(part_name)
     end
   end
 end

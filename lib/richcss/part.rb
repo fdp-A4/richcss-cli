@@ -16,11 +16,19 @@ module Richcss
         resp = RestClient.get "http://localhost:3000/api/part/#{name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
+          homepage = body["homepage"]
+          homepage.slice! "https:\/\/github.com\/"
+          homepage = homepage.split("\/")
+          repo_owner = homepage[0]
+          repo_name = homepage[1]
+          jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
+          downloadLink = jsonResponse["zipball_url"]
           self.install(body['url'])
         else
           puts "Error: Part #{name} cannot be found."
         end
       rescue RestClient::ExceptionWithResponse => e
+        puts "test"
         puts e.response
       end 
     end

@@ -30,12 +30,12 @@ module Richcss
         create_file "#{@name}/#{@name.downcase}.spec"
         # Write JSON to Test.Spec
         specs = {
-          "part_name" => "#{@name}",
-          "author" => "AUTHOR_NAME",
+          "name" => "#{@name}",
+          "authors" => "AUTHOR_NAME",
           "email" => "AUTHOR_EMAIL",
           "description" => "DESCRIPTION",
           "version" => "0.0.0",
-          "github" => "GITHUB_REPO_URL",
+          "homepage" => "GITHUB_REPO_URL",
           "dependencies" => { 
             "DEPENDECY_NAME" => "DEPENDECY_VERSION" 
           }
