@@ -2,7 +2,6 @@ require 'json'
 require 'rest-client'
 require 'uri'
 require 'zipruby'
-require 'pry'
 
 module Richcss
   class Part
@@ -23,12 +22,9 @@ module Richcss
           repo_name = homepage[1]
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
-          self.install(body['url'])
-        else
-          puts "Error: Part #{name} cannot be found."
+          self.install(downloadLink)
         end
       rescue RestClient::ExceptionWithResponse => e
-        puts "test"
         puts e.response
       end 
     end

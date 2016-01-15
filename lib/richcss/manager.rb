@@ -155,18 +155,13 @@ module Richcss
     	specs = File.read("#{part_name}/#{part_name}.spec")
     	specsJson = JSON.parse(specs)
 
-    	# binding.pry
-
-      resp = RestClient.post "http://localhost:3000/upload", :name => part_name, :description => specsJson["description"],
-        :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
-        :dependencies => specsJson["dependencies"]
-      body = JSON.parse(resp)
-
-      if body.code == 200 
-      	puts body["success"]
-      else
-      	puts body["error"]
-      end
+    	begin
+	      puts RestClient.post "http://localhost:3000/upload", :name => part_name, :description => specsJson["description"],
+	        :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
+	        :dependencies => specsJson["dependencies"]
+	    rescue RestClient::ExceptionWithResponse => e
+        puts e.response
+      end 
     end
   end
 end
