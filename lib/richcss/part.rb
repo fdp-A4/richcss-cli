@@ -8,11 +8,11 @@ module Richcss
     attr_accessor :name
 
     # Fetch url and download the part
-    def fetch()
-       puts "Fetching part #{name}"
+    def self.fetch(part_name)
+       puts "Fetching part #{part_name}"
 
       begin
-        resp = RestClient.get "http://localhost:3000/api/part/#{name}"
+        resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           homepage = body["homepage"]
@@ -22,7 +22,7 @@ module Richcss
           repo_name = homepage[1]
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
-          self.install(downloadLink)
+          install(downloadLink)
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
@@ -30,7 +30,7 @@ module Richcss
     end
 
     # Install this part
-    def install(resource)
+    def self.install(resource)
       uri = URI.parse(resource)
 
       http_object = Net::HTTP.new(uri.host, uri.port)

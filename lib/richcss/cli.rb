@@ -22,10 +22,7 @@ module Richcss
 
     desc "install <PART>", "Install the Parts requested into the Parts directory of Rich CSS framework"
     def install(part_name)
-      part = Richcss::Part.new
-      part.name = part_name
-
-    	part.fetch()
+    	Richcss::Part.fetch(part_name)
     end
 
     desc "push <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
