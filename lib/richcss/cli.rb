@@ -10,9 +10,9 @@ module Richcss
     # |    |--- elements
     # |    |    |--- ...
     # |    |--- box
-    # |    |    |--- ... 
+    # |    |    |--- ...
     # |    |--- parts
-    # |    |    |--- ... 
+    # |    |    |--- ...
     # |--- part_name.spec
     # |--- README.md
     def init(part)
@@ -38,6 +38,11 @@ module Richcss
       else
         puts result
       end
+    end
+
+    desc "testdependencyresolution", "Test the dependency resolver where the result should be a succesful resolution"
+    def testdependencyresolution()
+      Richcss::Resolver.resolveTest()
     end
   end
 end

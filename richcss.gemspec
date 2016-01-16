@@ -33,6 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry"
 
   spec.add_dependency "thor"
+  #spec.add_dependency "version_kit" # VersionKit is not published, thus its dependency will be added through bundler instead.
   spec.add_dependency "molinillo"
   spec.add_dependency "rest-client"
   spec.add_dependency "zipruby"
