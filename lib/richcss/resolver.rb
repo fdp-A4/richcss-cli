@@ -21,14 +21,15 @@ module Richcss
     def self.resolveTest()
       puts "Begin dependency resolution tests\n"
 
-      Dir.glob('**/dependencytestjson/awesome.json').map do |fixture_path| # TODO change awesome -> *
+      Dir.glob('lib/richcss/dependencytestjson/case/*.json').map do |fixture_path| # TODO change awesome -> *
         puts "Test #{fixture_path}\n"
         File.open(fixture_path) do |fixture|
           JSON.load(fixture).tap do |test_case|
             requirements = test_case['requested'].map do |(name, reqs)| # TODO figure this out
               VersionKit::Dependency.new name, reqs.split(',').map(&:chomp)
             end
-            dg = start(requirements, fixture_path)
+            fixture_path_index = 'lib/richcss/dependencytestjson/index/' + (test_case['index'] || 'awesome') + '.json'
+            dg = start(requirements, fixture_path_index)
           end
         end
       end
