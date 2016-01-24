@@ -35,7 +35,7 @@ module Richcss
 
     desc "Check format", "yep"
     def check(part_name)
-      result = Richcss::Manager.check(part_name)
+      result = Richcss::Manager.check(part_name, true)
       if result.nil?
         puts "Successed"
       else
