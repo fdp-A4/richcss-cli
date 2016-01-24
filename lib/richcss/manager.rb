@@ -155,6 +155,7 @@ module Richcss
       end
 
       # Check for version
+      # TODO: Use getPartData instead of 
       # data = getPartData(part_name)
       newVersion = hash[requiredSpecs[4]].split('.')
       oldVersion = '1.0.2'.split('.')
@@ -171,6 +172,19 @@ module Richcss
 
       if !versionIsNew
         return "Version numbering is not new"
+      end
+
+      # Check dependency existance
+      dependencies = hash[requiredSpecs[6]];
+
+      dependencies.keys.each do |name|
+        expectedVersion = dependencies[name]
+        # TODO: use server data
+        # data = getPartData(name)
+        data = ""
+        if data.nil?
+          return "Dependency part #{name} cannot be found in our database"
+        end
       end
 
       return nil
