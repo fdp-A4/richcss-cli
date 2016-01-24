@@ -16,7 +16,7 @@ module Richcss
 
       def init
         @name = part_name.first
-        @groups = ['box', 'elements', 'parts']
+        @groups = ['box', 'elements']
         @boxFiles = ['blocks', 'main', 'positioning']
         @elementFiles = ['button', 'colors', 'features', 'fonts', 'images', 'inputs', 'lists']
       end

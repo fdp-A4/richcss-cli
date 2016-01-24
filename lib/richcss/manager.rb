@@ -2,6 +2,7 @@ require 'richcss'
 require 'rest-client'
 require 'json'
 require 'email_validator'
+require 'pry'
 
 module Richcss
   class Manager
@@ -46,7 +47,7 @@ module Richcss
 
       # LEVEL 2 / LIB
       Dir.chdir('lib')
-      groups = ['box', 'elements', 'parts']
+      groups = ['box', 'elements']
 
       groups.each do |g|
         if !Dir.exist?(g)
@@ -104,24 +105,24 @@ module Richcss
       end
       
       defaultSpecs = {
-        "author" => "AUTHOR_NAME",
+        "authors" => "AUTHOR_NAME",
         "email" => "AUTHOR_EMAIL",
         "description" => "DESCRIPTION",
-        "github" => "GITHUB_REPO_URL"
+        "homepage" => "GITHUB_REPO_URL"
       }
-      requiredSpecs = ['part_name', 'author', 'email', 'description', 'version', 'github', 'dependencies']
+      requiredSpecs = ['name', 'authors', 'email', 'description', 'version', 'homepage', 'dependencies']
 
       # Ensure each spec exist
       requiredSpecs.each do |spec|
         if hash[spec].nil?
-          return "Missing #{spec} definition in #{specFile}"
+          return "Missing \"#{spec}\" definition in #{specFile}"
         end
       end
 
       # Check for default entries
       defaultSpecs.keys.each do |spec|
         if hash[spec] == defaultSpecs[spec]
-          return "Default value for #{spec} in #{specFile}"
+          return "Default value for \"#{spec}\" in #{specFile} is being used, please change it to a valid entry"
         end
       end
 
@@ -132,7 +133,7 @@ module Richcss
 
       # Check Part_Name
       if (hash[requiredSpecs[0]] != part_name)
-        return "Part name is invalid in #{specFile}"
+        return "Invalid part name: \"#{hash[requiredSpecs[0]]}\" in #{specFile}, should be \"#{part_name}\""
       end
 
       # Check if github url exist
@@ -147,12 +148,12 @@ module Richcss
           http.request request do |response|
             case response
             when Net::HTTPNotFound then
-              return "Could not access GitHub url"
+              return "Could not access GitHub url, please use a public repository"
             end
           end
         end
       rescue
-        return "Something has gone really wrong"
+        return "Invalid Github url"
       end
 
       # Checks after this should only be used if we're doing upload
@@ -161,23 +162,17 @@ module Richcss
       end
 
       # Check for version
-      # TODO: Use getPartData instead of 
-      # data = getPartData(part_name)
-      newVersion = hash[requiredSpecs[4]].split('.')
-      oldVersion = '1.0.2'.split('.')
-
-      versionIsNew = false
-      versionIsSame = false
-      for i in 0..2
-        if !versionIsNew
-          if newVersion[i] > oldVersion[i]
-            versionIsNew = true
+      begin
+	      resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+        if resp.code == 200
+        	body = JSON.parse(resp.to_str)
+        	current_version = body["version"]
+        	part_version = hash[requiredSpecs[4]]
+          if Gem::Version.new(current_version) >= Gem::Version.new(part_version)
+          	return "Part version: \"#{part_version}\" in #{specFile} must be greater than existing version: \"#{current_version}\""
           end
         end
-      end
-
-      if !versionIsNew
-        return "Version numbering is not new"
+	    rescue RestClient::ExceptionWithResponse => e
       end
 
       # Check dependency existance
@@ -207,7 +202,6 @@ module Richcss
           puts "Error: Part #{name} cannot be found."
         end
       rescue RestClient::ExceptionWithResponse => e
-        puts "test"
         puts e.response
       end 
       return nil
@@ -218,7 +212,7 @@ module Richcss
     	specsJson = JSON.parse(specs)
 
     	begin
-	      puts RestClient.post "http://localhost:3000/upload", :name => part_name, :description => specsJson["description"],
+	      puts RestClient.post "http://localhost:3000/api/upload", :name => part_name, :description => specsJson["description"],
 	        :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
 	        :dependencies => specsJson["dependencies"]
 	    rescue RestClient::ExceptionWithResponse => e
