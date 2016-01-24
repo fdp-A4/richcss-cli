@@ -11,8 +11,6 @@ module Richcss
     # |    |    |--- ...
     # |    |--- box
     # |    |    |--- ...
-    # |    |--- parts
-    # |    |    |--- ...
     # |--- part_name.spec
     # |--- README.md
     def init(part)
@@ -24,18 +22,24 @@ module Richcss
     	Richcss::Part.fetch(part_name)
     end
 
-    desc "push <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
-    def push(part_name)
-      Richcss::Manager.release(part_name)
+    desc "check <PART_NAME>", "Check to make sure that the CSS Part is following the folder/file structure and validating the spec file values"
+    def check(part_name)
+      root_dir = Dir.pwd
+      result = Richcss::Manager.check(part_name)
+      Dir.chdir(root_dir)
+      if !result.nil?
+        puts result
+        return false
+      end
+
+      puts "Passed all validation checks, part: #{part_name} is ready for upload!"
+      return true
     end
 
-    desc "Check format", "yep"
-    def check(part_name)
-      result = Richcss::Manager.check(part_name, true)
-      if result.nil?
-        puts "Successed"
-      else
-        puts result
+    desc "push <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
+    def push(part_name)
+      if check(part_name)
+        Richcss::Manager.upload(part_name)
       end
     end
 

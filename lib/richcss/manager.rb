@@ -8,8 +8,7 @@ require 'email_validator'
 module Richcss
   class Manager
     # Checks if the folder has the required format for uploading
-    # Also a flag to check specifics for upload
-    def self.check(part_name, upload)
+    def self.check(part_name)
       # Check for root directory directory
       specFilePath = ''
 
@@ -158,11 +157,6 @@ module Richcss
         return "Invalid URL for homepage"
       end
 
-      # Checks after this should only be used if we're doing upload
-      if !upload
-        return nil
-      end
-
       # Check for version
       begin
 	      resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
@@ -178,17 +172,12 @@ module Richcss
       end
 
       # Check dependency existance
-      dependencies = hash[requiredSpecs[6]];
-
-      dependencies.keys.each do |name|
-        expectedVersion = dependencies[name]
-        # TODO: use server data
-        # data = getPartData(name)
-        data = ""
-        if data.nil?
-          return "Dependency part #{name} cannot be found in our database"
-        end
-      end
+      begin
+      	dependencies = hash[requiredSpecs[6]].to_a.map { |x| "#{x[0]}=#{x[1].to_s}" }.join("&")
+        resp = RestClient.get "http://localhost:3000/api/validateDependencies/#{dependencies}"
+      rescue RestClient::ExceptionWithResponse => e
+        return e.response
+      end 
 
       return nil
     end
@@ -209,7 +198,7 @@ module Richcss
       return nil
     end
 
-    def self.release(part_name)
+    def self.upload(part_name)
     	specs = File.read("#{part_name}/#{part_name}.spec")
     	specsJson = JSON.parse(specs)
 
