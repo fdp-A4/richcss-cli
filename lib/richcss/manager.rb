@@ -1,6 +1,7 @@
 require 'richcss'
 require 'rest-client'
 require 'json'
+require 'email_validator'
 
 module Richcss
   class Manager
@@ -122,6 +123,11 @@ module Richcss
         if hash[spec] == defaultSpecs[spec]
           return "Default value for #{spec} in #{specFile}"
         end
+      end
+
+      # Check email
+      if !EmailValidator.valid?(hash[requiredSpecs[2]])
+        return "Email address is invalid"
       end
 
       # Check Part_Name
