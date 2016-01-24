@@ -17,7 +17,6 @@ module Richcss
     # |--- README.md
     def init(part)
       Richcss::Generators::Template.start([part])
-      # Richcss::Generators::Template.start('abc')
     end
 
     desc "install <PART>", "Install the Parts requested into the Parts directory of Rich CSS framework"
