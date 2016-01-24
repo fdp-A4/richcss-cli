@@ -161,25 +161,16 @@ module Richcss
 
       versionIsNew = false
       versionIsSame = false
-      for i in 0..1
+      for i in 0..2
         if !versionIsNew
-          if newVersion[i] 
-        end
-
-
-        if newVersion[i] > oldVersion[i]
-          versionIsNew = true
-        else newVersion[i] == oldVersion[i]
-          versionIsSame = true
+          if newVersion[i] > oldVersion[i]
+            versionIsNew = true
+          end
         end
       end
 
-      if !versionIsNew && newVersion[2] <= oldVersion[2]
-        return 
-      end
-
-      if (versionIsNew || newVersion[2] <=
-        return "Version is older or same as current version"
+      if !versionIsNew
+        return "Version numbering is not new"
       end
 
       return nil
