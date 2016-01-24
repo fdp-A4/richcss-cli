@@ -1,8 +1,9 @@
 require 'richcss'
 require 'rest-client'
 require 'json'
-require 'email_validator'
 require 'pry'
+require 'active_model'
+require 'email_validator'
 
 module Richcss
   class Manager
@@ -136,6 +137,7 @@ module Richcss
         return "Invalid part name: \"#{hash[requiredSpecs[0]]}\" in #{specFile}, should be \"#{part_name}\""
       end
 
+
       # Check if github url exist
       uri = URI.parse(hash[requiredSpecs[5]])
 
@@ -153,7 +155,7 @@ module Richcss
           end
         end
       rescue
-        return "Invalid Github url"
+        return "Invalid URL for homepage"
       end
 
       # Checks after this should only be used if we're doing upload
