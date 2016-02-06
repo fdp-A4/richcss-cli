@@ -17,9 +17,9 @@ module Richcss
       Richcss::Generators::Template.start([part])
     end
 
-    desc "install <PART>", "Install the Parts requested into the Parts directory of Rich CSS framework"
-    def install(part_name)
-        dep_list = Richcss::Part.resolve_dependencies(part_name)
+    desc "install <PART> [VERSION]", "Install the Parts requested into the Parts directory of Rich CSS framework"
+    def install(part_name, part_version='')
+        dep_list = Richcss::Part.resolve_dependencies(part_name, part_version)
         dep_list.each do |dep|
           Richcss::Part.fetch(dep.name, dep.version)
         end
