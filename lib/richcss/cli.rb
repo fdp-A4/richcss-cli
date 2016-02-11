@@ -23,7 +23,6 @@ module Richcss
         dep_list.each do |dep|
           Richcss::Part.fetch(dep.name, dep.version)
         end
-        Richcss::Part.fetch(part_name)
     end
 
     desc "check <PART_NAME>", "Check to make sure that the CSS Part is following the folder/file structure and validating the spec file values"
@@ -47,9 +46,5 @@ module Richcss
       end
     end
 
-    desc "testdependencyresolution", "Test the dependency resolver where the result should be a succesful resolution"
-    def testdependencyresolution()
-      Richcss::Resolver.resolveTest()
-    end
   end
 end

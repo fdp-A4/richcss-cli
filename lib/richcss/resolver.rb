@@ -1,7 +1,5 @@
 require 'molinillo'
 require 'version_kit'
-require 'json'
-require 'pathname'
 
 module Richcss
   class Resolver
