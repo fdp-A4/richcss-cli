@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-require 'richcss'
-require 'richcss/cli'
-
-Richcss::CLI.start
