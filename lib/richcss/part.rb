@@ -8,8 +8,26 @@ module Richcss
     attr_accessor :name
 
     # placeholder for latest version is blank
-    def self.resolve_dependencies(part_name, version='')
-      dep_list = Richcss::Resolver.start(part_name, version)
+    def self.resolve_dependencies(part_name, version='', installed={})
+      dep_list = Richcss::Resolver.start(part_name, version, installed)
+    end
+
+    def self.get_or_create_partfile()
+      part_file = "Partfile"
+      parts = Hash.new
+
+      begin
+        File.open(part_file, "r") do |f|
+          f.each_line do |line|
+          part, version = line.split(" ")
+            parts[part] = version
+          end
+        end
+      rescue
+        File.new(part_file, "w")
+      end
+
+      return parts
     end
 
     # Fetch url and download the part
@@ -86,5 +104,6 @@ module Richcss
         puts e
       end
     end
+
   end
 end

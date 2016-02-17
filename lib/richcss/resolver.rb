@@ -4,8 +4,11 @@ require 'version_kit'
 module Richcss
   class Resolver
 
-    def self.start(part_name, version)
+    def self.start(part_name, version, installed = {})
       requirements = [VersionKit::Dependency.new(part_name, version)]
+      installed.each do | p, v |
+        requirements.push(VersionKit::Dependency.new(p, v))
+      end
       @resolver = Molinillo::Resolver.new(RichSpecificationProvider.new(part_name, version), RichUI.new)
       @base_dg = Molinillo::DependencyGraph.new
       dg = @resolver.resolve(requirements, @base_dg)
