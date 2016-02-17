@@ -39,10 +39,10 @@ module Richcss
       return true
     end
 
-    desc "push <PART_NAME>", "Attempt to upload a new Rich CSS part to our servers"
-    def push(part_name)
-      if check(part_name)
-        Richcss::Manager.upload(part_name)
+    desc "push <PART_PATH>", "Attempt to upload a new Rich CSS part to our servers"
+    def push(part_path)
+      if check(part_path)
+        Richcss::Manager.upload(part_path)
       end
     end
 

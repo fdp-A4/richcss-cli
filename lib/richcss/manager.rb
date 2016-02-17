@@ -1,7 +1,6 @@
 require 'richcss'
 require 'rest-client'
 require 'json'
-require 'pry'
 require 'active_model'
 require 'email_validator'
 
@@ -114,7 +113,7 @@ module Richcss
 
       # Ensure each spec exist
       requiredSpecs.each do |spec|
-        if hash[spec].nil?
+        if hash[spec].nil? && spec != 'dependencies'
           return "Missing \"#{spec}\" definition in #{specFile}"
         end
       end
@@ -172,8 +171,13 @@ module Richcss
       end
 
       # Check dependency existance
+      dependencies = hash[requiredSpecs[6]]
+      if dependencies.nil?
+        return nil
+      end
+
       begin
-      	dependencies = hash[requiredSpecs[6]].to_a.map { |x| "#{x[0]}=#{x[1].to_s}" }.join("&")
+      	dependencies = dependencies.to_a.map { |x| "#{x[0]}=#{x[1].to_s}" }.join("&")
         resp = RestClient.get "http://localhost:3000/api/validateDependencies/#{dependencies}"
       rescue RestClient::ExceptionWithResponse => e
         return e.response
@@ -198,12 +202,15 @@ module Richcss
       return nil
     end
 
-    def self.upload(part_name)
-    	specs = File.read("#{part_name}.spec")
+    def self.upload(part_path)
+      partPathSplit = part_path.split("/")
+      partName = partPathSplit[partPathSplit.length-1]
+
+    	specs = File.read("#{part_path}/#{partName}.spec")
     	specsJson = JSON.parse(specs)
 
     	begin
-	      puts RestClient.post "http://localhost:3000/api/upload", :name => part_name, :description => specsJson["description"],
+	      puts RestClient.post "http://localhost:3000/api/upload", :name => partName, :description => specsJson["description"],
 	        :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
 	        :dependencies => specsJson["dependencies"]
 	    rescue RestClient::ExceptionWithResponse => e
