@@ -18,7 +18,7 @@ module RichcssCLI
 
     desc "check [PART_PATH]", "Validate folder/file structure of the Rich CSS part, optionally passing in a path"
     def check(part_path=nil)
-      part_path = "#{Dir.pwd}/#{part_path}" || Dir.pwd
+      part_path = "#{Dir.pwd}#{part_path}" || Dir.pwd
       result = Richcss::Manager.check(part_path)
       Dir.chdir(part_path)
       if !result.nil?
@@ -26,14 +26,18 @@ module RichcssCLI
         return false
       end
 
-      puts "Passed all validation checks, part: #{part_name} is ready for upload!"
+      partPathSplit = part_path.split("/")
+      partName = partPathSplit[partPathSplit.length - 1]
+
+      puts "Passed all validation checks, part: #{partName} is ready for upload!"
       return true
     end
 
-    desc "push <PART_NAME>", "Upload a new Rich CSS part to our servers"
-    def push(part_name)
-      if check()
-        Richcss::Manager.upload(part_name)
+    desc "push <PART_PATH>", "Attempt to upload a new Rich CSS part to our servers"
+    def push(part_path=nil)
+      part_path = "#{Dir.pwd}#{part_path}" || Dir.pwd
+      if check(part_path)
+        Richcss::Manager.upload(part_path)
       end
     end
   end

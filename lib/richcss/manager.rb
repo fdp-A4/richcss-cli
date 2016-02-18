@@ -188,12 +188,20 @@ module Richcss
       return nil
     end
 
-    def self.upload(part_name)
-      specs = File.read("#{partName}.spec")
+    def self.upload(part_path)
+      partPathSplit = part_path.split("/")
+      partName = partPathSplit[partPathSplit.length - 1]
+
+      if !File.file?("#{part_path}/#{partName}.spec")
+        puts "#{part_path}/#{partName}.spec file not found"
+        return
+      end
+
+      specs = File.read("#{part_path}/#{partName}.spec")
       specsJson = JSON.parse(specs)
 
       begin
-	    puts RestClient.post "http://localhost:3000/api/upload", :name => part_name, :description => specsJson["description"],
+	    puts RestClient.post "http://localhost:3000/api/upload", :name => partName, :description => specsJson["description"],
 	      :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
 	      :dependencies => specsJson["dependencies"]
 	  rescue RestClient::ExceptionWithResponse => e
