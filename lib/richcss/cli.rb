@@ -3,7 +3,7 @@ require 'richcss'
 
 module RichcssCLI
   class Part < Thor
-  desc "init <PART_NAME>", "Initialize a new Rich CSS part"
+  desc "init <PART_NAME>", "Generate a skeleton directory for your new Rich CSS part"
     # part_name
     # |--- lib
     # |    |--- elements
@@ -16,10 +16,10 @@ module RichcssCLI
       Richcss::Generators::PartTemplate.start([part])
     end
 
-    desc "check <PART_NAME>", "Check to make sure that the CSS Part is following the folder/file structure and validating the spec file values"
-    def check(part_name)
+    desc "check", "Validate folder/file structure of the Rich CSS part"
+    def check()
       root_dir = Dir.pwd
-      result = Richcss::Manager.check(part_name)
+      result = Richcss::Manager.check(root_dir)
       Dir.chdir(root_dir)
       if !result.nil?
         puts result
@@ -32,7 +32,7 @@ module RichcssCLI
 
     desc "push <PART_NAME>", "Upload a new Rich CSS part to our servers"
     def push(part_name)
-      if check(part_name)
+      if check()
         Richcss::Manager.upload(part_name)
       end
     end

@@ -7,38 +7,25 @@ require 'email_validator'
 module Richcss
   class Manager
     # Checks if the folder has the required format for uploading
-    def self.check(part_name)
-      # Check for root directory directory
-      specFilePath = ''
+    def self.check(check_dir)
+      Dir.chdir(check_dir)
 
       # LEVEL 1
-      if !Dir.exist?(part_name)
-        return "Part directory for [#{part_name}] does not exist"
+      # Find the spec file and the part name
+      part_name = ''
+      specFilePath = ''
+      Dir.glob("*.spec").each do |f|
+        part_name = File.basename(f, '.spec')
+        specFilePath = "#{check_dir}/#{f}"
+      end
+      if part_name.empty?
+        return "Rich CSS spec file not found"
       end
 
-      # Search for spec file and readme
-      foundReadme = false;
-      foundSpec = false;
-      Dir.foreach(part_name) do |filename|
-        next if filename == '.' or filename == '..'
-        if filename == "#{part_name.downcase}.spec"
-          foundSpec = true
-          specFilePath = "#{Dir.pwd}/#{part_name}/#{part_name.downcase}.spec"
-        end
-        if filename == "README.md"
-          foundReadme = true
-        end
-      end
-
-      if !foundSpec
-        return "#{part_name.downcase}.spec file not found"
-      end
-      if !foundReadme
+      # Check if readme exists
+      if !File.file?("#{check_dir}/README.md")
         return "README.md file not found"
       end
-
-      # LIB CHECK
-      Dir.chdir(part_name)
 
       if !Dir.exist?('lib')
         return "lib folder not found"
@@ -93,8 +80,7 @@ module Richcss
       end
 
       # SPEC FILE CHECK
-      # jsonData = File.read("#{part_name}/#{part_name.downcase}.spec")
-      specFile = "#{part_name.downcase}.spec"
+      specFile = "#{part_name}.spec"
 
       begin
         jsonData = File.read(specFilePath) 
@@ -202,20 +188,18 @@ module Richcss
       return nil
     end
 
-    def self.upload(part_path)
-      partPathSplit = part_path.split("/")
-      partName = partPathSplit[partPathSplit.length-1]
+    def self.upload(part_name)
+      specs = File.read("#{partName}.spec")
+      specsJson = JSON.parse(specs)
 
-    	specs = File.read("#{part_path}/#{partName}.spec")
-    	specsJson = JSON.parse(specs)
-
-    	begin
-	      puts RestClient.post "http://localhost:3000/api/upload", :name => partName, :description => specsJson["description"],
-	        :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
-	        :dependencies => specsJson["dependencies"]
-	    rescue RestClient::ExceptionWithResponse => e
+      begin
+	    puts RestClient.post "http://localhost:3000/api/upload", :name => part_name, :description => specsJson["description"],
+	      :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
+	      :dependencies => specsJson["dependencies"]
+	  rescue RestClient::ExceptionWithResponse => e
         puts e.response
       end 
     end
+
   end
 end
