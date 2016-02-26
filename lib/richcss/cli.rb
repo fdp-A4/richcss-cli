@@ -18,7 +18,7 @@ module RichcssCLI
 
     desc "check [PART_PATH]", "Validate folder/file structure of the Rich CSS part, optionally passing in a path"
     def check(part_path=nil)
-      part_path = "#{Dir.pwd}#{part_path}" || Dir.pwd
+      part_path = "#{Dir.pwd}"+"/"+"#{part_path}" || Dir.pwd
       result = Richcss::Manager.check(part_path)
       Dir.chdir(part_path)
       if !result.nil?
