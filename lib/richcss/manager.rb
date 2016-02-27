@@ -158,7 +158,7 @@ module Richcss
 
       # Check dependency existance
       dependencies = hash[requiredSpecs[6]]
-      if dependencies.nil?
+      if dependencies.nil? || dependencies.empty?
         return nil
       end
 
