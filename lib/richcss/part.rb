@@ -8,7 +8,7 @@ module Richcss
     attr_accessor :name
 
     # placeholder for latest version is blank
-    def self.resolve_dependencies(part_name, version='', installed={})
+    def self.resolve_dependencies(part_name, version, installed={})
       dep_list = Richcss::Resolver.start(part_name, version, installed)
     end
 
@@ -31,7 +31,7 @@ module Richcss
     end
 
     # Fetch url and download the part
-    def self.fetch(part_name, version='')
+    def self.fetch(part_name, version)
       puts "Fetching part #{part_name}"
 
       begin

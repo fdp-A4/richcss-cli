@@ -57,9 +57,25 @@ module RichcssCLI
     desc "install <PART> [VERSION]", "Install the Parts requested into the Parts directory of Rich CSS framework"
     def install(part_name, part_version='')
         installed_parts = Richcss::Part.get_or_create_partfile()
+        if part_version.eql?('')
+          resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+          if resp.code == 200
+            body = JSON.parse(resp.to_str)
+            part_version = body["version"]
+          end
+        end
+
+        partfileList = ''
+
         dep_list = Richcss::Part.resolve_dependencies(part_name, part_version, installed_parts)
         dep_list.each do |dep|
           Richcss::Part.fetch(dep.name, dep.version)
+          partfileList << dep.name << " " << dep.version << '\n'
+        end
+
+        FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+        File.open('#{part_name}.partfile', 'wb') do |f|
+          f.write(partfileList)
         end
     end
 
