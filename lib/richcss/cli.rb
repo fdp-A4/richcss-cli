@@ -70,11 +70,10 @@ module RichcssCLI
         dep_list = Richcss::Part.resolve_dependencies(part_name, part_version, installed_parts)
         dep_list.each do |dep|
           Richcss::Part.fetch(dep.name, dep.version)
-          partfileList << dep.name << " " << dep.version << '\n'
+          partfileList << dep.name << " " << dep.version.to_s << "\n"
         end
 
-        FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
-        File.open('#{part_name}.partfile', 'wb') do |f|
+        File.open('parts/Partfile', 'wb') do |f|
           f.write(partfileList)
         end
     end

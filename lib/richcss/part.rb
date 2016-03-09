@@ -13,7 +13,7 @@ module Richcss
     end
 
     def self.get_or_create_partfile()
-      part_file = "Partfile"
+      part_file = "parts/Partfile"
       parts = Hash.new
 
       begin
@@ -49,7 +49,7 @@ module Richcss
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
-      end 
+      end
     end
 
     # Install this part
