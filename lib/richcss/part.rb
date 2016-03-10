@@ -13,18 +13,24 @@ module Richcss
     end
 
     def self.get_or_create_partfile()
-      part_file = "parts/Partfile"
-      parts = Hash.new
+      if !Dir.exists?('parts')
+        FileUtils.mkdir_p('parts')
+      end
 
-      begin
-        File.open(part_file, "r") do |f|
-          f.each_line do |line|
-          part, version = line.split(" ")
-            parts[part] = version
+      parts = Hash.new
+      Dir.chdir('parts') do
+        part_file = "Partfile"
+
+        begin
+          File.open(part_file, "r") do |f|
+            f.each_line do |line|
+            part, version = line.split(" ")
+              parts[part] = version
+            end
           end
+        rescue
+          File.new(part_file, "w")
         end
-      rescue
-        File.new(part_file, "w")
       end
 
       return parts
