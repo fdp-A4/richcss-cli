@@ -51,7 +51,7 @@ module Richcss
           repo_name = homepage[1]
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
-          install(downloadLink)
+          install(part_name, downloadLink)
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
@@ -59,7 +59,7 @@ module Richcss
     end
 
     # Install this part
-    def self.install(resource)
+    def self.install(part_name, resource)
       uri = URI.parse(resource)
 
       http_object = Net::HTTP.new(uri.host, uri.port)
@@ -72,7 +72,7 @@ module Richcss
             case response
             when Net::HTTPRedirection then
               location = response['location']
-              install(location)
+              install(part_name, location)
             else
               puts "Installing part..."
 
@@ -82,26 +82,34 @@ module Richcss
               end
 
               Dir.chdir('parts') do
-                Zip::Archive.open_buffer(response.body) do |ar|
-
-                   #save the directory name for rename later
-                   oldDirName = ar.get_name(0)
-
-                   ar.each do |zf|
-                      if zf.directory?
-                         FileUtils.mkdir_p(zf.name)
-                      else
-                         dirname = File.dirname(zf.name)
-                         FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
-                         open(zf.name, 'wb') do |f|
-                            f << zf.read
-                         end
-                      end
-                   end
-
-                   FileUtils.mv oldDirName, name
-
+                FileUtils.remove_dir(part_name)
+                FileUtils.mkdir_p(part_name)
+                Zip::ZipFile.open(response.body) do |zipfile|
+                    dir = zipfile.dir
+                    dir.entries('.').each do |entry|
+                        zipfile.extract(entry, "#{part_name}/#{entry}")
+                    end
                 end
+                # Zip::Archive.open_buffer(response.body) do |ar|
+
+                #    #save the directory name for rename later
+                #    oldDirName = ar.get_name(0)
+
+                #    ar.each do |zf|
+                #       if zf.directory?
+                #          FileUtils.mkdir_p(zf.name)
+                #       else
+                #          dirname = File.dirname(zf.name)
+                #          FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+                #          open(zf.name, 'wb') do |f|
+                #             f << zf.read
+                #          end
+                #       end
+                #    end
+
+                #    FileUtils.mv oldDirName, part_name
+
+                # end
               end
             end
           end

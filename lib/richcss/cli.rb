@@ -65,8 +65,12 @@ module RichcssCLI
           end
         end
 
-        partfileList = ''
+        if installed_parts.key?(part_name) and installed_parts[part_name].eql?(part_version)
+            put "Part #{part_name} v#{part_version} is already installed!"
+            return
+        end
 
+        partfileList = ''
         dep_list = Richcss::Part.resolve_dependencies(part_name, part_version, installed_parts)
         dep_list.each do |dep|
           Richcss::Part.fetch(dep.name, dep.version)
