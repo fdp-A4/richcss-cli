@@ -76,40 +76,32 @@ module Richcss
             else
               puts "Installing part..."
 
-              # TODO make verifier class do this
               if !Dir.exists?('parts')
                 FileUtils.mkdir_p('parts')
               end
 
               Dir.chdir('parts') do
-                FileUtils.remove_dir(part_name)
-                FileUtils.mkdir_p(part_name)
-                Zip::ZipFile.open(response.body) do |zipfile|
-                    dir = zipfile.dir
-                    dir.entries('.').each do |entry|
-                        zipfile.extract(entry, "#{part_name}/#{entry}")
-                    end
+                if Dir.exists?(part_name) 
+                  FileUtils.remove_dir(part_name)
                 end
-                # Zip::Archive.open_buffer(response.body) do |ar|
+                Zip::Archive.open_buffer(response.body) do |ar|
+                   #save the directory name for rename later
+                   oldDirName = ar.get_name(0)
 
-                #    #save the directory name for rename later
-                #    oldDirName = ar.get_name(0)
+                   ar.each do |zf|
+                      if zf.directory?
+                         FileUtils.mkdir_p(zf.name)
+                      else
+                         dirname = File.dirname(zf.name)
+                         FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
+                         open(zf.name, 'wb') do |f|
+                            f << zf.read
+                         end
+                      end
+                   end
 
-                #    ar.each do |zf|
-                #       if zf.directory?
-                #          FileUtils.mkdir_p(zf.name)
-                #       else
-                #          dirname = File.dirname(zf.name)
-                #          FileUtils.mkdir_p(dirname) unless File.exist?(dirname)
-                #          open(zf.name, 'wb') do |f|
-                #             f << zf.read
-                #          end
-                #       end
-                #    end
-
-                #    FileUtils.mv oldDirName, part_name
-
-                # end
+                   FileUtils.mv oldDirName, part_name
+                end
               end
             end
           end

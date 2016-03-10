@@ -66,7 +66,7 @@ module RichcssCLI
         end
 
         if installed_parts.key?(part_name) and installed_parts[part_name].eql?(part_version)
-            put "Part #{part_name} v#{part_version} is already installed!"
+            puts "Part #{part_name} v#{part_version} is already installed!"
             return
         end
 
