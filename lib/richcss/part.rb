@@ -72,7 +72,7 @@ module Richcss
             case response
             when Net::HTTPRedirection then
               location = response['location']
-              install(part_name, location)
+              install(part_name, version, location)
             else
               puts "Installing part..."
 
