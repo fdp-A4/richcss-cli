@@ -51,7 +51,7 @@ module Richcss
           repo_name = homepage[1]
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
-          install(part_name, downloadLink)
+          install(part_name, body["version"], downloadLink)
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
@@ -59,7 +59,7 @@ module Richcss
     end
 
     # Install this part
-    def self.install(part_name, resource)
+    def self.install(part_name, version, resource)
       uri = URI.parse(resource)
 
       http_object = Net::HTTP.new(uri.host, uri.port)
@@ -106,6 +106,8 @@ module Richcss
             end
           end
         end
+
+        RestClient.post "http://localhost:3000/api/part/downloaded", :name => part_name, :version => version
       rescue Exception => e
         puts e
       end
