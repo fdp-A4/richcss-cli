@@ -62,6 +62,14 @@ module RichcssCLI
           if resp.code == 200
             body = JSON.parse(resp.to_str)
             part_version = body["version"]
+          else
+            puts "Error: Part #{part_name} cannot be found."
+            return
+        else 
+          resp = RestClient.get "http://localhost:3000/api/part/#{part_name}", {:params => {'version' => part_version}}
+          if resp.code == 400
+            puts "Part: #{part_name} #{part_version} does not exist."
+            return
           end
         end
 
