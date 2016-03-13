@@ -57,6 +57,14 @@ to make sure everything is valid. Then publish it to CSSParts with
     $ richcss part push <PART_NAME> 
 
 
+## Development
+
+After checking out the repo, run `bundle install` to install dependencies. 
+To install this gem onto your local machine, run `bundle exec rake install`.
+To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, 
+which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/fdp-A4/richcss-cli
