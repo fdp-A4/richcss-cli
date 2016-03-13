@@ -52,6 +52,8 @@ module Richcss
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
           install(part_name, body["version"], downloadLink)
+        else
+          puts "Error: Part #{name} cannot be found."
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
