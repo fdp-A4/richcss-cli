@@ -144,7 +144,7 @@ module Richcss
 
       # Check for version
       begin
-	      resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+	      resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
         if resp.code == 200
         	body = JSON.parse(resp.to_str)
         	current_version = body["version"]
@@ -164,7 +164,7 @@ module Richcss
 
       begin
       	dependencies = dependencies.to_a.map { |x| "#{x[0]}=#{x[1].to_s}" }.join("&")
-        resp = RestClient.get "http://localhost:3000/api/validateDependencies/#{dependencies}"
+        resp = RestClient.get "http://www.cssparts.com/api/validateDependencies/#{dependencies}"
       rescue RestClient::ExceptionWithResponse => e
         return e.response
       end 
@@ -175,7 +175,7 @@ module Richcss
     # Fetch url and download the part
     def self.getPartData(part_name)
       begin
-        resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+        resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           return body
@@ -201,7 +201,7 @@ module Richcss
       specsJson = JSON.parse(specs)
 
       begin
-	    puts RestClient.post "http://localhost:3000/api/upload", :name => partName, :description => specsJson["description"],
+	    puts RestClient.post "http://www.cssparts.com/api/upload", :name => partName, :description => specsJson["description"],
 	      :version => specsJson["version"], :authors => specsJson["authors"], :email => specsJson["email"], :homepage => specsJson["homepage"],
 	      :dependencies => specsJson["dependencies"]
 	  rescue RestClient::ExceptionWithResponse => e

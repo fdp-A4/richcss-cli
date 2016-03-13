@@ -41,7 +41,7 @@ module Richcss
       puts "Fetching part #{part_name}"
 
       begin
-        resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+        resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           homepage = body["homepage"]
@@ -107,7 +107,7 @@ module Richcss
           end
         end
 
-        RestClient.post "http://localhost:3000/api/part/downloaded", :name => part_name, :version => version
+        RestClient.post "http://www.cssparts.com/api/part/downloaded", :name => part_name, :version => version
       rescue Exception => e
         puts e
       end

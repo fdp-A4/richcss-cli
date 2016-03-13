@@ -54,11 +54,11 @@ module RichcssCLI
       Richcss::Generators::Template.start([part])
     end
 
-    desc "install <PART> [VERSION]", "Install the Parts requested into the Parts directory of Rich CSS framework"
+    desc "install <PART> [VERSION]", "Install the part requested into the Parts directory"
     def install(part_name, part_version='')
         installed_parts = Richcss::Part.get_or_create_partfile()
         if part_version.eql?('')
-          resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+          resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
           if resp.code == 200
             body = JSON.parse(resp.to_str)
             part_version = body["version"]
