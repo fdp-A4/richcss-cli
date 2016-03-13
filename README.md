@@ -3,6 +3,7 @@
 Richcss CLI is a tool to manage your CSS using the RichCSS framework.
 It also includes a package manager to help install and create your own RichCSS parts for others to use.
 
+Both CSS and SASS are supported.
 
 ## Installation
 
@@ -29,7 +30,7 @@ To start, in the directory where you want to put all your CSS, run
 
     $ richcss init
 
-to create the skeleton structure.
+to create the skeleton structure. Currently, only CSS is supported by `init`.
 
 #### Using RichCSS parts
 
