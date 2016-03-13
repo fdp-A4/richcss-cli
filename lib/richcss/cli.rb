@@ -3,7 +3,7 @@ require 'richcss'
 
 module RichcssCLI
   class Part < Thor
-  desc "init <PART_NAME>", "Generate a skeleton directory for your new Rich CSS part"
+    desc "init <PART_NAME>", "Generate a skeleton directory for your new Rich CSS part"
     # part_name
     # |--- lib
     # |    |--- elements
@@ -51,26 +51,35 @@ module RichcssCLI
     # parts
     # |--- ...
     def init()
-      Richcss::Generators::Template.start([part])
+      Richcss::Generators::Template.start()
     end
 
     desc "install <PART> [VERSION]", "Install the part requested into the Parts directory"
     def install(part_name, part_version='')
         installed_parts = Richcss::Part.get_or_create_partfile()
         if part_version.eql?('')
-          resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
-          if resp.code == 200
-            body = JSON.parse(resp.to_str)
-            part_version = body["version"]
-          else
-            puts "Error: Part #{part_name} cannot be found."
-            return
-        else 
-          resp = RestClient.get "http://localhost:3000/api/part/#{part_name}", {:params => {'version' => part_version}}
-          if resp.code == 400
-            puts "Part: #{part_name} #{part_version} does not exist."
-            return
-          end
+          RestClient.get("http://www.cssparts.com/api/part/#{part_name}") { |response, request, result, &block|
+            if response.code == 200
+              body = JSON.parse(response.to_str)
+              part_version = body["version"]
+            elsif response.code == 400
+              puts "Part: #{part_name} cannot be found."
+              return
+            else
+              puts "Error #{response.code} retrieving Part: #{part_name}"
+              return
+            end
+          }
+        else
+          RestClient.get("http://www.cssparts.com/api/part/#{part_name}", {:params => {'version' => part_version}}) { |response, request, result, &block|
+            if response.code == 400
+              puts "Part: #{part_name} #{part_version} does not exist."
+              return
+            elsif response.code != 200
+              puts "Error #{response.code} retrieving Part: #{part_name} #{part_version}"
+              return
+            end
+          }
         end
 
         if installed_parts.key?(part_name) and installed_parts[part_name].eql?(part_version)
