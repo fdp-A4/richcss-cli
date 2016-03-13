@@ -8,34 +8,40 @@ module Richcss
     attr_accessor :name
 
     # placeholder for latest version is blank
-    def self.resolve_dependencies(part_name, version='', installed={})
+    def self.resolve_dependencies(part_name, version, installed={})
       dep_list = Richcss::Resolver.start(part_name, version, installed)
     end
 
     def self.get_or_create_partfile()
-      part_file = "Partfile"
-      parts = Hash.new
+      if !Dir.exists?('parts')
+        FileUtils.mkdir_p('parts')
+      end
 
-      begin
-        File.open(part_file, "r") do |f|
-          f.each_line do |line|
-          part, version = line.split(" ")
-            parts[part] = version
+      parts = Hash.new
+      Dir.chdir('parts') do
+        part_file = "Partfile"
+
+        begin
+          File.open(part_file, "r") do |f|
+            f.each_line do |line|
+            part, version = line.split(" ")
+              parts[part] = version
+            end
           end
+        rescue
+          File.new(part_file, "w")
         end
-      rescue
-        File.new(part_file, "w")
       end
 
       return parts
     end
 
     # Fetch url and download the part
-    def self.fetch(part_name, version='')
+    def self.fetch(part_name, version)
       puts "Fetching part #{part_name}"
 
       begin
-        resp = RestClient.get "http://localhost:3000/api/part/#{part_name}"
+        resp = RestClient.get "http://www.cssparts.com/api/part/#{part_name}"
         if resp.code == 200
           body = JSON.parse(resp.to_str)
           homepage = body["homepage"]
@@ -45,15 +51,17 @@ module Richcss
           repo_name = homepage[1]
           jsonResponse = JSON.parse(Net::HTTP.get(URI("https://api.github.com/repos/#{repo_owner}/#{repo_name}/releases/tags/v#{body["version"]}")))
           downloadLink = jsonResponse["zipball_url"]
-          install(downloadLink)
+          install(part_name, body["version"], downloadLink)
+        else
+          puts "Error: Part #{name} cannot be found."
         end
       rescue RestClient::ExceptionWithResponse => e
         puts e.response
-      end 
+      end
     end
 
     # Install this part
-    def self.install(resource)
+    def self.install(part_name, version, resource)
       uri = URI.parse(resource)
 
       http_object = Net::HTTP.new(uri.host, uri.port)
@@ -66,18 +74,19 @@ module Richcss
             case response
             when Net::HTTPRedirection then
               location = response['location']
-              install(location)
+              install(part_name, version, location)
             else
               puts "Installing part..."
 
-              # TODO make verifier class do this
               if !Dir.exists?('parts')
                 FileUtils.mkdir_p('parts')
               end
 
               Dir.chdir('parts') do
+                if Dir.exists?(part_name) 
+                  FileUtils.remove_dir(part_name)
+                end
                 Zip::Archive.open_buffer(response.body) do |ar|
-
                    #save the directory name for rename later
                    oldDirName = ar.get_name(0)
 
@@ -93,13 +102,14 @@ module Richcss
                       end
                    end
 
-                   FileUtils.mv oldDirName, name
-
+                   FileUtils.mv oldDirName, part_name
                 end
               end
             end
           end
         end
+
+        RestClient.post "http://www.cssparts.com/api/part/downloaded", :name => part_name, :version => version
       rescue Exception => e
         puts e
       end
