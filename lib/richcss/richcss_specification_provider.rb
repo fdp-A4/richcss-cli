@@ -1,5 +1,5 @@
-require 'version_kit'
 require 'molinillo'
+require 'richcss/vendor/version_kit/lib/version_kit'
 
 module Richcss
   class RichSpecificationProvider

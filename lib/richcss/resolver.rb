@@ -1,5 +1,5 @@
 require 'molinillo'
-require 'version_kit'
+require 'richcss/vendor/version_kit/lib/version_kit'
 
 module Richcss
   class Resolver
