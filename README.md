@@ -28,9 +28,9 @@ Or install it yourself as:
 
 To start, in the directory where you want to put all your CSS, run  
 
-    $ richcss init
+    $ richcss init [css/scss]
 
-to create the skeleton structure. Currently, only CSS is supported by `init`.
+to create the skeleton structure. Currently, only CSS and SCSS is supported by `init`. The default option is CSS is the user does not state which file format to use.
 
 #### Using RichCSS parts
 
@@ -44,7 +44,7 @@ The version is optional and will default to the latest version of that part.
 
 Generate the necessary files for your Part with
 
-    $ richcss part init <PART_NAME>
+    $ richcss part init <PART_NAME> [css/scss]
 
 #### Publishing your Part for others to use
 
