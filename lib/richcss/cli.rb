@@ -3,7 +3,7 @@ require 'richcss'
 
 module RichcssCLI
   class Part < Thor
-    desc "init <PART_NAME>", "Generate a skeleton directory for your new Rich CSS part"
+    desc "init <PART_NAME> [css/scss]", "Generate a skeleton directory for your new Rich CSS part, either css or scss files"
     # part_name
     # |--- lib
     # |    |--- elements
@@ -12,8 +12,12 @@ module RichcssCLI
     # |    |    |--- ...
     # |--- part_name.spec
     # |--- README.md
-    def init(part)
-      Richcss::Generators::PartTemplate.start([part])
+    def init(part, extension="css")
+      if (extension.eql?("css") || extension.eql?("scss"))
+        Richcss::Generators::PartTemplate.start([part, extension])
+      else
+        puts "Only support css or scss extension, default is css"
+      end
     end
 
     desc "check [PART_PATH]", "Validate folder/file structure of the Rich CSS part, optionally passing in a path"
@@ -43,15 +47,19 @@ module RichcssCLI
   end
 
   class Cli < Thor
-    desc "init", "Initialize current directory to follow the Rich CSS framework"
+    desc "init [css/scss]", "Initialize current directory to follow the Rich CSS framework, either css or scss files"
     # elements
     # |--- ...
     # box
     # |--- ...
     # parts
     # |--- ...
-    def init()
-      Richcss::Generators::Template.start()
+    def init(extension="css")
+      if (extension.eql?("css") || extension.eql?("scss"))
+        Richcss::Generators::Template.start([extension])
+      else
+        puts "Only support css or scss extension, default is css"
+      end
     end
 
     desc "install <PART> [VERSION]", "Install the part requested into the Parts directory"
