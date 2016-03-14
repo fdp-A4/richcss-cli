@@ -5,6 +5,9 @@ module Richcss
   module Generators
     class Template < Thor::Group
       include Thor::Actions
+      
+      # Args is [extension]
+      argument :arguments, :type => :array
 
       def self.source_root
         File.dirname(__FILE__) + "/generator"
@@ -15,6 +18,7 @@ module Richcss
         @boxFiles = ['blocks', 'main', 'positioning']
         @elementFiles = ['button', 'colors', 'features', 'fonts', 'images', 'inputs', 'lists']
         @partFiles = ['Partfile']
+        @extension = "." + arguments[0];
       end
 
       def create_folders
@@ -24,16 +28,12 @@ module Richcss
       end
 
       def create_css_files
-        # TODO: add choice of CSS or SCSS files to generate
-        # TODO: Make it not hardcode box/elements
-        extension = ".css"
-        # extension = ".css.scss"
         @boxFiles.each do |filename|
-          create_file "box/#{filename}#{extension}" unless File.file?("box/#{filename}#{extension}")
+          create_file "box/#{filename}#{@extension}" unless File.file?("box/#{filename}#{@extension}")
         end 
 
         @elementFiles.each do |filename|
-          create_file "elements/#{filename}#{extension}" unless File.file?("elements/#{filename}#{extension}")
+          create_file "elements/#{filename}#{@extension}" unless File.file?("elements/#{filename}#{@extension}")
         end
       end
       
@@ -45,7 +45,10 @@ module Richcss
     class PartTemplate < Thor::Group
       include Thor::Actions
 
-      argument :part_name, :type => :array
+      # Args is [part_name, extension]
+      argument :arguments, :type => :array
+
+
       # argument :part, :type => :array
       # argument :part_name, :type => :string
 
@@ -54,10 +57,11 @@ module Richcss
       end
 
       def init
-        @name = part_name.first
+        @name = arguments[0]
         @groups = ['box', 'elements']
         @boxFiles = ['blocks', 'main', 'positioning']
         @elementFiles = ['button', 'colors', 'features', 'fonts', 'images', 'inputs', 'lists']
+        @extension = "." + arguments[1];
       end
 
       def create_folders
@@ -69,16 +73,12 @@ module Richcss
       end
 
       def create_css_files
-        # TODO: add choice of CSS or SCSS files to generate
-        # TODO: Make it not hardcode box/elements
-        extension = ".css"
-        # extension = ".css.scss"
         @boxFiles.each do |filename|
-          create_file "#{@name}/lib/box/#{filename}#{extension}" unless File.file?("#{@name}/lib/box/#{filename}#{extension}")
+          create_file "#{@name}/lib/box/#{filename}#{@extension}" unless File.file?("#{@name}/lib/box/#{filename}#{@extension}")
         end 
 
         @elementFiles.each do |filename|
-          create_file "#{@name}/lib/elements/#{filename}#{extension}" unless File.file?("#{@name}/lib/elements/#{filename}#{extension}")
+          create_file "#{@name}/lib/elements/#{filename}#{@extension}" unless File.file?("#{@name}/lib/elements/#{filename}#{@extension}")
         end
       end
 
