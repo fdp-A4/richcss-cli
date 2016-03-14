@@ -23,9 +23,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "pry"
 
-  spec.add_dependency "thor"
-  spec.add_dependency "molinillo"
-  spec.add_dependency "rest-client"
-  spec.add_dependency "zipruby"
-  spec.add_dependency "email_validator"
+  spec.add_dependency "thor", '~> 0.19'
+  spec.add_dependency "molinillo", '~> 0.4'
+  spec.add_dependency "rest-client", '~> 1.8'
+  spec.add_dependency "zipruby", '~> 0.3'
+  spec.add_dependency "email_validator", '~> 1.6'
 end
