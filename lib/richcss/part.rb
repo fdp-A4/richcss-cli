@@ -75,6 +75,7 @@ module Richcss
             when Net::HTTPRedirection then
               location = response['location']
               install(part_name, version, location)
+              return
             else
               puts "Installing part..."
 

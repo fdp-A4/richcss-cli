@@ -97,9 +97,15 @@ module RichcssCLI
 
         partfileList = ''
         dep_list = Richcss::Part.resolve_dependencies(part_name, part_version, installed_parts)
-        dep_list.each do |dep|
-          Richcss::Part.fetch(dep.name, dep.version)
-          partfileList << dep.name << " " << dep.version.to_s << "\n"
+
+        if dep_list == nil
+          puts "Failed to install #{part_name} #{part_version}"
+          return
+        end
+
+        dep_list.each do |dep_name, dep_version|
+          Richcss::Part.fetch(dep_name, dep_version)
+          partfileList << dep_name << " " << dep_version.to_s << "\n"
         end
 
         File.open('parts/Partfile', 'wb') do |f|
