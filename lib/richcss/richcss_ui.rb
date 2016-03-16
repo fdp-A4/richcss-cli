@@ -20,15 +20,15 @@ module Richcss
     end
 
     def before_resolution
-      Bundler.ui.info "Resolving dependencies...", false
+      Richcss.ui.info "Resolving dependencies...", false
     end
 
     def after_resolution
-      Bundler.ui.info ""
+      Richcss.ui.info ""
     end
 
     def indicate_progress
-      Bundler.ui.info ".", false
+      Richcss.ui.info ".", false
     end
   end
 end
