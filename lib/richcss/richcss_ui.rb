@@ -20,15 +20,17 @@ module Richcss
     end
 
     def before_resolution
-      Richcss.ui.info "Resolving dependencies...", false
+      STDOUT.print "Resolving dependencies..."
+      STDOUT.flush
     end
 
     def after_resolution
-      Richcss.ui.info ""
+      puts ""
     end
 
     def indicate_progress
-      Richcss.ui.info ".", false
+      STDOUT.print "."
+      STDOUT.flush
     end
   end
 end
